@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+//used commmands: npx prisma init --datasource-provider mysql
+// npx prisma migrate dev
+// npx prisma studio
+//npm i @prisma/client
+
+model users{
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName String
+  validated Boolean
+  createdAt DateTime @default(now())
+  updatedAT DateTime @updatedAt
+  todo todo?
+  manytodo manytodo[]
+}
+
+//one to one with user
+model todo{
+  id Int @id @default(autoincrement())
+  todoText String
+  completed Boolean
+  userId Int @unique
+  user users @relation(fields: [userId],references: [id])
+  tags tags[]
+}
+
+//one to many with user
+model manytodo{
+  id Int @id @default(autoincrement())
+  todoText String
+  completed Boolean
+  userId Int
+  user users @relation(fields: [userId],references: [id])
+  
+}
+
+//many to many with todo
+model tags{
+  id Int @id @default(autoincrement())
+  tagName String
+  todo todo[]
+}
+model tagsextra{
+  id Int @id @default(autoincrement())
+  tagName String
+}
+
